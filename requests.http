@@ -1,0 +1,24 @@
+POST https://localhost:5001/api/advices
+Content-Type: application/json
+
+{
+    "text": "Mitt råd är",
+    "author": "Anonym"
+}
+
+###
+POST https://localhost:5001/api/advices
+Content-Type: application/json
+
+{
+    "text": "Mitt andra råd är",
+    "author": "Anonym 2"
+}
+
+###
+GET  https://localhost:5001/api/advices/2
+###
+GET  https://localhost:5001/api/advices
+###
+GET  http://localhost:5000/api/advices/random
+###
