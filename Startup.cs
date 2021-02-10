@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using WebApiTest.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApiTest
 {
@@ -11,7 +13,10 @@ namespace WebApiTest
         //Konfigurera Services och göra dem tillgängliga via Dependency Injection
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            // services.AddDbContext<AdviceDbContext>(opt => opt.UseInMemoryDatabase("AdviceDatabase"));
+            services.AddDbContext<AdviceDbContext>(opt => opt.UseSqlite("Data Source=minDatabas.db"));
+
+            services.AddControllers(); 
             
             services.AddSwaggerGen(c =>
             {

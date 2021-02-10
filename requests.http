@@ -11,12 +11,12 @@ POST https://localhost:5001/api/advices
 Content-Type: application/json
 
 {
-    "text": "Mitt andra råd är",
+    "text": "Mitt tredje råd är",
     "author": "Anonym 2"
 }
 
 ###
-GET  https://localhost:5001/api/advices/2
+GET  https://localhost:5001/api/advices/1
 ###
 GET  https://localhost:5001/api/advices
 ###

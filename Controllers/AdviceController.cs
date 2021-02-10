@@ -12,45 +12,38 @@ namespace WebApiTest.Controllers
     [Route("api/advices/")]
     public class AdviceController : ControllerBase
     {
-        private static List<Advice> advices;
-
+        private AdviceDbContext _dbContext;
         private ILogger<AdviceController> _logger;
 
-        public AdviceController(ILogger<AdviceController> logger)
+        public AdviceController(ILogger<AdviceController> logger, AdviceDbContext dbContext)
         {
+            _dbContext = dbContext;
             _logger = logger;
-            if (advices == null) 
-            {
-                advices = new List<Advice>();
-                advices.Add(new Advice{Id = 0, Text = "Borsta tänderna.", Author = "Tandis"});
-                advices.Add(new Advice{Id = 1, Text = "Sov 8h.", Author = "Mamma"});
-                advices.Add(new Advice{Id = 2, Text = "Bädda sängen.", Author = "Pappa"});
-            }
         }
 
-        [HttpGet("random")] //api/advice/random
-        public ActionResult<Advice> GetRandomAdvice()
-        {
-            var rng = new Random();
-            int randomId = rng.Next(0, advices.Count);
+        // [HttpGet("random")] //api/advice/random
+        // public ActionResult<Advice> GetRandomAdvice()
+        // {
+        //     var rng = new Random();
+        //     int randomId = rng.Next(0, advices.Count);
 
-            _logger.Log(LogLevel.Debug, "Randomgenerator says: " + randomId);
+        //     _logger.Log(LogLevel.Debug, "Randomgenerator says: " + randomId);
 
-            return GetAdviceByID(randomId);
-        }
+        //     return GetAdviceByID(randomId);
+        // }
 
-        [HttpGet("all")] //api/advice/all
-        public ActionResult<List<Advice>> GetAllAdvice()
-        {
-            if (advices == null) return NotFound();
-            else if (advices.Count == 0) return NoContent();
-            return Ok(advices);
-        }
+        // [HttpGet("all")] //api/advice/all
+        // public ActionResult<List<Advice>> GetAllAdvice()
+        // {
+        //     if (advices == null) return NotFound();
+        //     else if (advices.Count == 0) return NoContent();
+        //     return Ok(advices);
+        // }
 
         [HttpGet("{id}")] //api/advice/id
-        public ActionResult<Advice> GetAdviceByID(int id)
+        public async Task<ActionResult<Advice>> GetAdviceByID(int id)
         {
-            Advice advice = advices.Where(x => x.Id == id).FirstOrDefault<Advice>();
+            Advice advice = await _dbContext.Advices.FindAsync(id);
             if (advice == null)
             {
                 return NotFound();
@@ -59,10 +52,10 @@ namespace WebApiTest.Controllers
         }
 
         [HttpPost] //api/advice
-        public ActionResult<Advice> AddAdvice(Advice newAdvice)
+        public async Task<ActionResult<Advice>> AddAdvice(Advice newAdvice)
         {
-            newAdvice.Id = advices.Count;
-            advices.Add(newAdvice);
+            _dbContext.Advices.Add(newAdvice);
+            await _dbContext.SaveChangesAsync();
             return CreatedAtAction(nameof(GetAdviceByID), new {id = newAdvice.Id}, newAdvice);
         }
     }
